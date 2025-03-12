@@ -6,7 +6,8 @@ using Raven.Client.Document;
 using Raven.Client.Indexes;
 using Raven.Imports.Newtonsoft.Json;
 using SimpleInjector;
-
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
 namespace Data
 {
     public class DataConfiguration
@@ -18,6 +19,8 @@ namespace Data
             container.RegisterSingleton<IListTypeLookup<Assembly>, ListTypeLookup<Assembly>>();
 
             InitializeAssemblyInstancesService.RegisterAssemblyWithSerializableTypes(container, typeof(User).Assembly);
+            InitializeAssemblyInstancesService.RegisterAssemblyWithSerializableTypes(container, typeof(Product).Assembly);
+            InitializeAssemblyInstancesService.RegisterAssemblyWithSerializableTypes(container, typeof(Order).Assembly);
             InitializeAssemblyInstancesService.RegisterAssemblyWithSerializableTypes(container, assembly);
 
             InitializeAssemblyInstancesService.Initialize(container, lifestyle, assembly);
@@ -35,7 +38,7 @@ namespace Data
         {
             var documentStore = new DocumentStore
                                 {
-                                    Url = "http://localhost:8080/",
+                                    Url = "https://a.venkat.ravendb.community",
                                     DefaultDatabase = "SampleProject",
                                     Conventions =
                                     {
@@ -57,10 +60,12 @@ namespace Data
 
             if (createIndexes)
             {
-                IndexCreation.CreateIndexes(assembly, documentStore);
+                //IndexCreation.CreateIndexes(assembly, documentStore);
             }
 
             return documentStore;
         }
+
+ 
     }
 }
